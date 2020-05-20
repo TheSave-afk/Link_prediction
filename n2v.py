@@ -88,7 +88,7 @@ def create_test_and_training_set(positive_training_set, percentage, negative_per
         accetable[index] = False
 
     negative_training_set = nx.Graph()
-    negative_training_set.add_nodes_from(G)
+    negative_training_set.add_nodes_from(positive_training_set)
     negative_training_set.add_edges_from(negative_edges_for_training)  ## c'è il rischio di nodi isolati nei samples negativi così
     #############################
 
