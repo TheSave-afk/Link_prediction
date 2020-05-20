@@ -185,15 +185,15 @@ model.save(embedding_model_filename) # Save model for later use
 # print("++ Modello creato\n")
 
 X_Hadamard = edges_to_features(model, edges, edge_functions['hadamard'], dims)
-X_L2 = edges_to_features(model, edges, edge_functions['l2'], dims)
-X_L1 = edges_to_features(model, edges, edge_functions['l1'], dims)
+X_L2       = edges_to_features(model, edges, edge_functions['l2'], dims)
+X_L1       = edges_to_features(model, edges, edge_functions['l1'], dims)
 
 # print("++ Training: Edge embedding completato\n")
 
 # LOGISTIC REGRESSION
 
 # train the model with Logistic Regression
-clf_H = LogisticRegression()
+clf_H  = LogisticRegression()
 clf_L1 = LogisticRegression()
 clf_L2 = LogisticRegression()
 
@@ -208,26 +208,26 @@ clf_L2.fit(X_L2, training_labels)
 test_edges = list(positive_test_set.edges())
 
 positive_emb_test_Hadamard = edges_to_features(model, test_edges, edge_functions['hadamard'], dims)
-positive_emb_test_L1 = edges_to_features(model, test_edges, edge_functions['l1'], dims)
-positive_emb_test_L2 = edges_to_features(model, test_edges, edge_functions['l2'], dims)
-
+positive_emb_test_L1       = edges_to_features(model, test_edges, edge_functions['l1'], dims)
+positive_emb_test_L2       = edges_to_features(model, test_edges, edge_functions['l2'], dims)
+    
 # Embedding -- Negative test set
 test_edges = list(negative_test_set.edges())
 
 negative_emb_test_Hadamard = edges_to_features(model, test_edges, edge_functions['hadamard'], dims)
-negative_emb_test_L1 = edges_to_features(model, test_edges, edge_functions['l1'], dims)
-negative_emb_test_L2 = edges_to_features(model, test_edges, edge_functions['l2'], dims)
+negative_emb_test_L1       = edges_to_features(model, test_edges, edge_functions['l1'], dims)
+negative_emb_test_L2       = edges_to_features(model, test_edges, edge_functions['l2'], dims)
 
 # UNIONE dei due test set
 Hadamard_edges, y_test_Hadamard = get_edges_and_labels(positive_emb_test_Hadamard, negative_emb_test_Hadamard)
-L1_edges, y_test_L1 = get_edges_and_labels(positive_emb_test_L1,negative_emb_test_L1)
-L2_edges, y_test_L2 = get_edges_and_labels(positive_emb_test_L2,negative_emb_test_L2)
+L1_edges, y_test_L1             = get_edges_and_labels(positive_emb_test_L1,negative_emb_test_L1)
+L2_edges, y_test_L2             = get_edges_and_labels(positive_emb_test_L2,negative_emb_test_L2)
 
 
 ## PREDICTION
 y_pred_test_Hadamard = clf_H.predict(Hadamard_edges)
-y_pred_test_L1 = clf_L1.predict(L1_edges)
-y_pred_test_L2 = clf_L2.predict(L2_edges)
+y_pred_test_L1       = clf_L1.predict(L1_edges)
+y_pred_test_L2       = clf_L2.predict(L2_edges)
 
 # Accuracy
 score_Hadamard = sklearn.metrics.accuracy_score(y_test_Hadamard,  y_pred_test_Hadamard)
