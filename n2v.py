@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from sklearn.preprocessing import LabelEncoder
 from sklearn.linear_model import LogisticRegression
+import argparse
 
 
 # Funzioni di embedding
@@ -28,14 +29,17 @@ edge_functions = {
 
 
 '''
-TODO: Assicurarsi della CASUALITA' delle scelte nella funzione create, calcolare l'accuratezza con una media su N run diverse
-      e confrontare i risultati sui tre diversi dataset (Astro, facebook, ProteinProtein...)
-      Per ogni dataset fare anche il confronto fra l'embedding con hadamard e quello con L1
-      
-      ACCURACY = (TP + TN) / (TP + TN + FP + FN)
+TODO: 
+    Assicurarsi della CASUALITA' delle scelte nella funzione create, calcolare l'accuratezza con una media su N run diverse
+    e confrontare i risultati sui tre diversi dataset (Astro, Facebook, ProteinProtein...)
 
-      Il testing va fatto su positive + negative test set 
+    Per ogni dataset fare anche il confronto fra l'embedding con hadamard e quello con L1 - OK
+
+    ACCURACY = (TP + TN) / (TP + TN + FP + FN) - OK
+
+    Il testing va fatto su positive + negative test set - OK
 '''
+
 # ricevendo un grafo in ingresso crea i due set
 def create_test_and_training_set(positive_training_set, percentage, negative_percentage, min_degree):
 
@@ -45,7 +49,7 @@ def create_test_and_training_set(positive_training_set, percentage, negative_per
 
     # generate negative samples for training
     all_negative_samples = list(nx.non_edges(positive_training_set))
-    accetable = [True for i in range(len(all_negative_samples))] # inizializzo una lista di false per decidere se l'arco è accetabile o no
+    accetable = [True for i in range(len(all_negative_samples))] # lista di bool per decidere se l'arco è accetabile o no
 
     node_number = positive_training_set.number_of_nodes()
     node_list = positive_training_set.nodes()
@@ -58,6 +62,7 @@ def create_test_and_training_set(positive_training_set, percentage, negative_per
         counter = 0
 
         # DOMANDA: gli edges vanno mescolati per aumentare la casualità?
+        # FORSE: j = randint() - (u,v) = edges[j] ???
         for u,v in edges:
             if counter < percent:
                 if(positive_training_set.degree[u] > min_degree and positive_training_set.degree[v] > min_degree):
@@ -104,12 +109,11 @@ def create_test_and_training_set(positive_training_set, percentage, negative_per
     return positive_test_set, positive_training_set, negative_test_set, negative_training_set
 
 # ritorna gli edges con le corrispondenti labels
-def get_edges_for_training(positive, negative):
+def get_edges_and_labels(positive, negative):
         edges = list(positive) + list(negative)
         labels = np.zeros(len(edges))
         labels[:len(positive)] = 1
         return edges, labels
-
 
 # effettua l'edge embedding
 def edges_to_features(model, edge_list, edge_function, dimensions):
@@ -129,75 +133,73 @@ def edges_to_features(model, edge_list, edge_function, dimensions):
 
         return features_vec
 
-# SCORES
-'''
-TODO: Va modificata per calcolare l'accuracy con la formula giusta...
-'''
-def get_test_score(test_type, prediction_list):
-
-    ones = 0
-    samples = len(prediction_list)
-
-    for i in range(samples):
-        if prediction_list[i] == 1:
-            ones += 1
-    
-    score = 0
-
-    if test_type == 'positive':
-        score = (float(ones)) / (float(samples))
-    else:
-        score = (float(samples - ones)) / (float(samples))
-
-    return score
-
-
+# Debug...
 def print_sample(samples, prediction_list):
     for i in range(samples):
         print(prediction_list[i])
         print('\n')
 
-## MAIN ##
+
+
+
+
+#################### MAIN ####################
+
+# Command line arguments
+'''
+parser = argparse.ArgumentParser(description='Link prediction on graph dataset')
+parser.add_argument("--f", default = 'ca-AstroPh.txt', help = "dataset filename (.txt)")
+parser.add_argument("--e", default = './embeddings.model', help = "node embedding filename (.model)")
+args = parser.parse_args()
+'''
 
 # FILES
-EMBEDDING_MODEL_FILENAME = './embeddings.model'
+embedding_model_filename = './embeddings.model' # argomento?
+# embedding_model_filename = args.e
 
-dims = 128
+# DATASET - ARGOMENTO DA LINEA DI COMANDO ?
+fileName = "ca-AstroPh.txt"
+# filename = args.f
 
 
 # CREATE GRAPH
-FileName = "ca-AstroPh.txt"
 graph = nx.Graph()
 
 # read graph from file
-G = nx.read_edgelist(FileName, create_using=graph, nodetype=int, data=(('weight',int),))
+G = nx.read_edgelist(fileName, create_using=graph, nodetype=int, data=(('weight',int),))
 
 # creo test e training
 min_degree = 2
 positive_test_set, positive_training_set, negative_test_set, negative_training_set = create_test_and_training_set(G, 0.2, 0.5, min_degree)
 
 # edges positivi e negativi con le loro labels
-edges, labels = get_edges_for_training(positive_training_set.edges(), negative_training_set.edges())
+edges, training_labels = get_edges_and_labels(positive_training_set.edges(), negative_training_set.edges())
 
 # Precompute probabilities and generate walks
+dims = 128
+
 node2vec = Node2Vec(positive_training_set, dimensions = dims, walk_length = 80, num_walks = 10, workers = 4)
 model = node2vec.fit(window=10, min_count=1, batch_words=4)
-model.save(EMBEDDING_MODEL_FILENAME) # Save model for later use
+model.save(embedding_model_filename) # Save model for later use
 
 # print("++ Modello creato\n")
 
-X_hadamard = edges_to_features(model, edges, edge_functions['hadamard'], dims)
-X_l2 = edges_to_features(model,edges,edge_functions['l2'], dims)
-X_l1 = edges_to_features(model,edges,edge_functions['l1'], dims)
+X_Hadamard = edges_to_features(model, edges, edge_functions['hadamard'], dims)
+X_L2 = edges_to_features(model, edges, edge_functions['l2'], dims)
+X_L1 = edges_to_features(model, edges, edge_functions['l1'], dims)
 
 # print("++ Training: Edge embedding completato\n")
 
-clf_H, clf_l1, clf_l2 = LogisticRegression()
+# LOGISTIC REGRESSION
 
 # train the model with Logistic Regression
-clf_H.fit(X_hadamard, labels)
-clf_l1.fit(X_l1 , labels)
-clf_l2.fit(X_l2, labels)
+clf_H = LogisticRegression()
+clf_L1 = LogisticRegression()
+clf_L2 = LogisticRegression()
+
+clf_H.fit(X_Hadamard, training_labels)
+clf_L1.fit(X_L1 , training_labels)
+clf_L2.fit(X_L2, training_labels)
 
 
 # TESTING - prediction
@@ -205,61 +207,36 @@ clf_l2.fit(X_l2, labels)
 # Embedding ++ Positive test set
 test_edges = list(positive_test_set.edges())
 
-positive_emb_test_H  = edges_to_features(model, test_edges, edge_functions['hadamard'], dims)
-positive_emb_test_l1 = edges_to_features(model, test_edges, edge_functions['l1'], dims)
-positive_emb_test_l2 = edges_to_features(model, test_edges, edge_functions['l2'], dims)
+positive_emb_test_Hadamard = edges_to_features(model, test_edges, edge_functions['hadamard'], dims)
+positive_emb_test_L1 = edges_to_features(model, test_edges, edge_functions['l1'], dims)
+positive_emb_test_L2 = edges_to_features(model, test_edges, edge_functions['l2'], dims)
 
-###
 # Embedding -- Negative test set
-negative_emb_test_H  = edges_to_features(model, test_edges, edge_functions['hadamard'], dims)
-negative_emb_test_l1 = edges_to_features(model, test_edges, edge_functions['l1'], dims)
-negative_emb_test_l2 = edges_to_features(model, test_edges, edge_functions['l2'], dims)
+test_edges = list(negative_test_set.edges())
 
-#UNIONE dei due test set per formare il finale embeddato
-y_test_H  = get_edges_for_training(positive_emb_test_H,negative_emb_test_H)
-y_test_l1 = get_edges_for_training(positive_emb_test_l1,negative_emb_test_l1)
-y_test_l2 = get_edges_for_training(positive_emb_test_l2,negative_emb_test_l2)
+negative_emb_test_Hadamard = edges_to_features(model, test_edges, edge_functions['hadamard'], dims)
+negative_emb_test_L1 = edges_to_features(model, test_edges, edge_functions['l1'], dims)
+negative_emb_test_L2 = edges_to_features(model, test_edges, edge_functions['l2'], dims)
 
-###
+# UNIONE dei due test set
+Hadamard_edges, y_test_Hadamard = get_edges_and_labels(positive_emb_test_Hadamard, negative_emb_test_Hadamard)
+L1_edges, y_test_L1 = get_edges_and_labels(positive_emb_test_L1,negative_emb_test_L1)
+L2_edges, y_test_L2 = get_edges_and_labels(positive_emb_test_L2,negative_emb_test_L2)
+
 
 ## PREDICTION
-y_pred_test_H  = clf_H. predict(y_test_H)
-y_pred_test_l1 = clf_l1.predict(y_test_l1)
-y_pred_test_l2 = clf_l2.predict(y_test_l2)
+y_pred_test_Hadamard = clf_H.predict(Hadamard_edges)
+y_pred_test_L1 = clf_L1.predict(L1_edges)
+y_pred_test_L2 = clf_L2.predict(L2_edges)
 
+# Accuracy
+score_Hadamard = sklearn.metrics.accuracy_score(y_test_Hadamard,  y_pred_test_Hadamard)
+score_L1 = sklearn.metrics.accuracy_score(y_test_L1, y_pred_test_L1)
+score_L2 = sklearn.metrics.accuracy_score(y_test_L2, y_pred_test_L2)
 
-score_H  = sklearn.metrics.accuracy_score(y_test_H,  y_pred_test_H)
-score_l1 = sklearn.metrics.accuracy_score(y_test_l1, y_pred_test_l1)
-score_l2 = sklearn.metrics.accuracy_score(y_test_l2, y_pred_test_l2)
-
-#PRINT the score on whole test set 
-print("Score of Hadamard embedding test:" + score_H  + '\n')
-print("Score of L1 embedding test:"       + score_l1 + '\n')
-print("Score of L2 embedding test:"       + score_l2 + '\n')
-
-'''
-score = get_test_score('positive', y_pos_test)
-print("++ Score for positive test: " + score + '\n')
-
-samples = 10
-
-print("++ Positive test for " + samples + " samples \n")
-print_sample(samples, y_pos_test)
-
-
-
-# -- Negative test
-test_edges = list(negative_test_set.edges())
-emb_test = edges_to_features(model, test_edges, edge_functions['hadamard'], dims)
-
-y_neg_test = clf.predict(emb_test)
-score = get_test_score('positive', y_neg_test)
-print("++ Score for negative test: " + score + '\n')
-
-
-print("++ Negative test for " + samples + " samples \n")
-print_sample(samples, y_neg_test)
-
-'''
+# PRINT the score on whole test set
+print("++ Score of Hadamard embedding test:", score_Hadamard , '\n')
+print("++ Score of L1 embedding test:"      , score_L1       , '\n')
+print("++ Score of L2 embedding test:"      , score_L2       , '\n')
 
 
