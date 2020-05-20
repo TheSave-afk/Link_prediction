@@ -47,22 +47,27 @@ def create_test_and_training_set(positive_training_set, percentage, negative_per
         percent = int(round((percentage * len(positive_training_set.edges(node)))))
         edges = list(positive_training_set.edges(node))
         counter = 0
-
         edge_count = len(edges)
+        
         for attempt in range(edge_count):
+            
+            if len(edges) > 0:
+                
+                j = random.randint(0, len(edges))
+                u, v = edges.pop(j)
+                
+                if counter < percent:
 
-            j = random.randint(0, len(edges))
-            u, v = edges.pop(j)
+                    if (positive_training_set.degree[u] > min_degree and positive_training_set.degree[v] > min_degree):
+                        positive_test_set.add_edge(u,v)
+                        positive_training_set.remove_edge(u,v)
+                        counter += 1
+                    
+                else:
+                    break
 
-            if counter < percent:
-
-                if(positive_training_set.degree[u] > min_degree and positive_training_set.degree[v] > min_degree):
-                    positive_test_set.add_edge(u,v)
-                    positive_training_set.remove_edge(u,v)
-                    counter += 1
             else:
                 break
-
 
         ''' Versione precedente
         for u,v in edges:
