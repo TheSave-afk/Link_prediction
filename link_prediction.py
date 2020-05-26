@@ -262,7 +262,7 @@ print("++ ++ L2 embedding test: "      , L2_avg_score       , '\n')
 # Save results to text file
 log_file = args.l
 with open(log_file, 'a') as f: # append results 
-    f.write('Scores for ' + str(runs) + 'executions on ' + filename + ' dataset:\n's)
+    f.write('Scores for ' + str(runs) + 'executions on ' + filename + ' dataset:\n')
     f.write('\tHadamard: ' + str(Hadamard_avg_score) + '\n')
     f.write('\tL1: ' + str(L1_avg_score) + '\n')
     f.write('\tL2: ' + str(L2_avg_score) + '\n')
