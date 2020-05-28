@@ -118,7 +118,7 @@ def create_test_and_training_set(positive_training_set, percentage, negative_per
 
 def get_edges_and_labels(positive, negative):
 
-        edges = list(positive) + list(negative)
+        edges  = list(positive) + list(negative)
         labels = np.zeros(len(edges))
         labels[:len(positive)] = 1
         return edges, labels
@@ -177,8 +177,8 @@ def training_and_testing(filename):
 
     # train the model with Logistic Regression
     clf_Hadamard  = LogisticRegression()
-    clf_L1 = LogisticRegression()
-    clf_L2 = LogisticRegression()
+    clf_L1        = LogisticRegression()
+    clf_L2        = LogisticRegression()
 
     clf_Hadamard.fit(X_Hadamard, training_labels)
     clf_L1.fit(X_L1,      training_labels)
@@ -214,8 +214,8 @@ def training_and_testing(filename):
 
     # Accuracy
     score_Hadamard = sklearn.metrics.accuracy_score(y_test_Hadamard,  y_pred_test_Hadamard)
-    score_L1 = sklearn.metrics.accuracy_score(y_test_L1,              y_pred_test_L1)
-    score_L2 = sklearn.metrics.accuracy_score(y_test_L2,              y_pred_test_L2)
+    score_L1       = sklearn.metrics.accuracy_score(y_test_L1,              y_pred_test_L1)
+    score_L2       = sklearn.metrics.accuracy_score(y_test_L2,              y_pred_test_L2)
 
     return score_Hadamard, score_L1, score_L2
 #################### MAIN ####################
