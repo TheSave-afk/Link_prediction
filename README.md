@@ -13,3 +13,16 @@ For deepwalk mode:
 ```
 python link_prediction.py --m deepwalk --r 3 --f dataset_name
 ```
+
+# List of all command line arguments
+
+- --r : number of executions (default 1)
+- --m : node embedding mode (default 'Node2Vec')
+- --f : input dataset file name, an edge list in .txt format (default 'ca-AstroPh.txt')
+- --l : log file name, where result are stored (default 'log.txt')
+
+Run 
+```
+python link_prediction.py --help
+```
+to see full list in prompt
