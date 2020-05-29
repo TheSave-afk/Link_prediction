@@ -1,5 +1,5 @@
 # Link_prediction
-Link prediction for network using node2vec  
+Link prediction for networks using node2vec  
 
 # Datasets
 Ca-AstroPh, Facebook, Protein-Protein Interaction, Blog Catalog, Wikipedia  
