@@ -17,6 +17,10 @@ Node2Vec -> accuracy for 3 executions on facebook dataset:
 	Hadamard: 0.9645488133825962
 	L1: 0.8246594283382823
 	L2: 0.8179991084313681
+	
+	
+###########################################################
+
 
 Deepwalk -> accuracy for 3 executions on wikipedia dataset:
 	Hadamard: 0.5897374255415765
