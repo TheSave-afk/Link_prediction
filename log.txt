@@ -1,19 +1,40 @@
-Scores for 3 executions on protein.txt dataset:
+Node2Vec -> accuracy for 3 executions on protein.txt dataset:
 	Hadamard: 0.7768154422991823
 	L1: 0.7087667322717269
 	L2: 0.7331288776401133
 	
-Scores for 3 executions on wikipedia.txt dataset:
+Node2Vec -> accuracy for 3 executions on wikipedia.txt dataset:
 	Hadamard: 0.6671510913438828
 	L1: 0.7812271761213984
 	L2: 0.7999322839963732
 
-Scores for 3 executions on ca-AstroPh.txt dataset:
+Node2Vec -> accuracy for 3 executions on ca-AstroPh.txt dataset:
 	Hadamard: 0.9635397116811552
 	L1: 0.6157913228408334
 	L2: 0.6535742567028303
 
-Scores for 3 executions on facebook.txt dataset:
+Node2Vec -> accuracy for 3 executions on facebook dataset:
 	Hadamard: 0.9645488133825962
 	L1: 0.8246594283382823
 	L2: 0.8179991084313681
+
+Deepwalk -> accuracy for 3 executions on wikipedia dataset:
+	Hadamard: 0.5897374255415765
+	L1: 0.6822840149228481
+	L2: 0.6832723419789691
+	
+Deepwalk -> accuracy for 3 executions on protein dataset:
+	Hadamard: 0.640594749477271
+	L1: 0.8181419241591161
+	L2: 0.8208953939612965
+	
+Deepwalk-> accuracy for 3 executions on facebook dataset:
+	Hadamard: 0.9410544687988757
+	L1: 0.9583116107925139
+	L2: 0.9585420586168597
+	
+Deepwalk -> accuracy for 3 executions on blogcatalog dataset:
+	Hadamard: 0.5918564717365854
+	L1: 0.856485709352472
+	L2: 0.8588590836459741
+
