@@ -267,12 +267,6 @@ Hadamard_avg_score = Hadamard_sum / (float(runs))
 L1_avg_score = L1_sum / (float(runs))
 L2_avg_score = L2_sum / (float(runs))
 
-# Print the score on whole test set
-print('++ Scores for ', runs, 'executions:\n')
-print("++ ++ Hadamard embedding test: ", Hadamard_avg_score , '\n')
-print("++ ++ L1 embedding test: "      , L1_avg_score       , '\n')
-print("++ ++ L2 embedding test: "      , L2_avg_score       , '\n')
-
 # Save results to text file
 log_file = args.l
 
