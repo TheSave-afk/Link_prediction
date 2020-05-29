@@ -258,12 +258,12 @@ Hadamard_sum = L1_sum = L2_sum = 0
 
 # Main execution loop
 for i in range(runs):
-     print('Starting ' + str(i+1) + 'iteration...\n')
+     print('Starting iteration ' + str(i+1) + '...\n')
      score_Hadamard, score_L1, score_L2 = training_and_testing(filename, mode)
      Hadamard_sum += score_Hadamard
      L1_sum += score_L1
      L2_sum += score_L2
-     print('End of ' + str(i+1) + 'iteration...\n')
+     print('End of iteration ' + str(i+1) + '...\n')
 
 Hadamard_avg_score = Hadamard_sum / (float(runs))
 L1_avg_score = L1_sum / (float(runs))
