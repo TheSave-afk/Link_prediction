@@ -6,10 +6,10 @@ Ca-AstroPh, Facebook, Protein-Protein Interaction, Blog Catalog, Wikipedia
 
 # Usage
 For Node2Vec mode it's the default, no argument is needed:
-'''
-python link_prediction.py --r 3 --f wikipedia.txt
-'''
+```
+python link_prediction.py --r 3 --f dataset_name
+```
 For deepwalk mode:
-'''
-python link_prediction.py --m deepwalk --r 3 --f wikipedia.txt
-'''
+```
+python link_prediction.py --m deepwalk --r 3 --f dataset_name
+```
