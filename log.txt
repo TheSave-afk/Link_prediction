@@ -1,14 +1,14 @@
-Node2Vec -> accuracy for 3 executions on protein.txt dataset:
+Node2Vec -> accuracy for 3 executions on protein dataset:
 	Hadamard: 0.7768154422991823
 	L1: 0.7087667322717269
 	L2: 0.7331288776401133
 	
-Node2Vec -> accuracy for 3 executions on wikipedia.txt dataset:
+Node2Vec -> accuracy for 3 executions on wikipedia dataset:
 	Hadamard: 0.6671510913438828
 	L1: 0.7812271761213984
 	L2: 0.7999322839963732
 
-Node2Vec -> accuracy for 3 executions on ca-AstroPh.txt dataset:
+Node2Vec -> accuracy for 3 executions on ca-AstroPh dataset:
 	Hadamard: 0.9635397116811552
 	L1: 0.6157913228408334
 	L2: 0.6535742567028303
@@ -21,7 +21,11 @@ Node2Vec -> accuracy for 3 executions on facebook dataset:
 	
 ###########################################################
 
-
+Deepwalk-> accuracy for 3 executions on ca-AstroPh dataset:
+	Hadamard: 0.8517406154829809
+	L1: 0.9371039658102401
+	L2: 0.9379553446738345
+	
 Deepwalk -> accuracy for 3 executions on wikipedia dataset:
 	Hadamard: 0.5897374255415765
 	L1: 0.6822840149228481
