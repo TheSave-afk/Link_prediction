@@ -9,7 +9,7 @@ For Node2Vec mode it's the default, no argument is needed:
 ```
 python link_prediction.py --r 3 --f dataset_name
 ```
-For deepwalk mode:
+For deepwalk mode (after installing it):
 ```
 python link_prediction.py --m deepwalk --r 3 --f dataset_name
 ```
