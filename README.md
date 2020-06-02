@@ -5,7 +5,7 @@ Link prediction for networks using node2vec
 Ca-AstroPh, Facebook, Protein-Protein Interaction, Blog Catalog, Wikipedia  
 
 # Usage
-For Node2Vec mode it's the default, no argument is needed:
+For Node2Vec mode, it's the default, no argument is needed:
 ```
 python link_prediction.py --r 3 --f dataset_name
 ```
