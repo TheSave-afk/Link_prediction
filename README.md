@@ -23,6 +23,6 @@ python link_prediction.py --m deepwalk --r 3 --f dataset_name
 
 Run 
 ```
-python link_prediction.py --help
+python link_prediction.py --h
 ```
 to see full list in prompt
