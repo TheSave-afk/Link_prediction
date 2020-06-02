@@ -60,8 +60,6 @@ def create_test_and_training_set(positive_training_set, percentage, negative_per
     node_number = positive_training_set.number_of_nodes()
     node_list = positive_training_set.nodes()
 
-    print('Creating training and test set...\n') # debug
-
     for node in node_list:
 
         percent = int(round((percentage * len(positive_training_set.edges(node)))))
@@ -121,8 +119,6 @@ def create_test_and_training_set(positive_training_set, percentage, negative_per
     negative_test_set.add_edges_from(negative_edges_for_test)
     ###########################
 
-    print('Training and test set created\n') # debug
-
     return positive_test_set, positive_training_set, negative_test_set, negative_training_set
 
 
@@ -159,8 +155,10 @@ def training_and_testing(filename, mode):
 
     min_degree = 2
 
+    print('Creating training and test set...') # debug
     positive_test_set, positive_training_set, negative_test_set, negative_training_set = create_test_and_training_set(G, 0.2, 0.5, min_degree)
     edges, training_labels = get_edges_and_labels(positive_training_set.edges(), negative_training_set.edges())
+    print('OK - Training and test set created') # debug
 
     # Precompute probabilities and generate walks
     dims = 128
@@ -168,21 +166,21 @@ def training_and_testing(filename, mode):
     # NODE EMBEDDING MODE
     if mode == "deepwalk":
         nx.write_edgelist(positive_training_set, "tmp.edgelist", data = False)
-        print('Deepwalk...\n') # debug
+        print('Deepwalk...') # debug
         command = "deepwalk --format edgelist --input tmp.edgelist --number-walks 10 --walk-length 80 --workers 4 --window-size 10 --representation-size 128 --output tmp.embeddings"
         os.system('cmd /c ' + command)
         model = embeddings_to_dictionary("tmp.embeddings")
 		
 
     else: #  Node2Vec mode
-        print('Node2Vec...\n') # debug
+        print('Node2Vec...') # debug
         node2vec = Node2Vec(positive_training_set, dimensions = dims, walk_length = 80, num_walks = 10, workers = 4)
         model = node2vec.fit(window = 10, min_count = 1, batch_words = 4)
     
     print('OK - Model created') # debug
 	
     # Edge embedding
-    print('Edge embedding...\n') # debug
+    print('Edge embedding...') # debug
     X_Hadamard = edges_to_features(model, edges, edge_functions['hadamard'], dims)
     X_L1       = edges_to_features(model, edges, edge_functions['L1'],       dims)
     X_L2       = edges_to_features(model, edges, edge_functions['L2'],       dims)
@@ -225,6 +223,7 @@ def training_and_testing(filename, mode):
 
 
     ## PREDICTION
+    print('Testing...') # debug
     y_pred_test_Hadamard = clf_Hadamard.predict(Hadamard_edges)
     y_pred_test_L1       = clf_L1.predict(L1_edges)
     y_pred_test_L2       = clf_L2.predict(L2_edges)
@@ -267,14 +266,15 @@ mode = args.m.lower()
 
 Hadamard_sum = L1_sum = L2_sum = 0
 
-# Main execution loop
+# Main execution loop (Node2vec / Deepwalk)
 for i in range(runs):
-     print('Starting iteration ' + str(i+1))
+     print('##############################\n ')
+     print('Starting iteration ' + str(i+1)) # Logging
      score_Hadamard, score_L1, score_L2 = training_and_testing(filename, mode)
      Hadamard_sum += score_Hadamard
      L1_sum += score_L1
      L2_sum += score_L2
-     print('End of iteration ' + str(i+1))
+     print('Iteration ' + str(i+1) + ' finished\n') # Logging
 
 Hadamard_avg_score = Hadamard_sum / (float(runs))
 L1_avg_score = L1_sum / (float(runs))
@@ -294,4 +294,4 @@ with open(log_file, log_mode) as f:
     f.write('\tL1: ' + str(L1_avg_score) + '\n')
     f.write('\tL2: ' + str(L2_avg_score) + '\n')
 
-print('Done - Closing') # debug
+print('Done') # Logging
