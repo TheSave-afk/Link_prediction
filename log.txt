@@ -18,6 +18,11 @@ Node2Vec -> accuracy for 3 executions on facebook dataset:
 	L1: 0.8246594283382823
 	L2: 0.8179991084313681
 	
+node2vec-> accuracy for 3 executions on blogcatalog.txt dataset:
+	Hadamard: 0.761750348570636
+	L1: 0.8315902306404818
+	L2: 0.840869146034379
+	
 	
 ###########################################################
 
